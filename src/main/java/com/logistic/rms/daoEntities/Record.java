@@ -14,12 +14,12 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "ACTIVITY")
+@Table(name = "RECORD")
 @EqualsAndHashCode
-@ToString(includeFieldNames = true)
+@ToString(includeFieldNames = true, exclude = {"activity"})
 @Where(clause = "is_deleted = false")
-@SQLDelete(sql = "update ACTIVITY set is_deleted=true where id = ?")
-public class Activity {
+@SQLDelete(sql = "update RECORD set is_deleted=true where id = ?")
+public class Record {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,21 +27,29 @@ public class Activity {
     @JsonProperty("id")
     private long id;
 
-    @JsonProperty("activty_def")
-    @Column( name = "description",nullable = true)
-    private String activityDef;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "activity_id")
+    private Activity activity;
 
-    @JsonProperty("name")
-    @Column( name = "name",nullable = false)
-    private String name;
+    @JsonProperty("record_def")
+    @Column( name = "record_def",nullable = true)
+    private String recordDef;
 
-    @JsonProperty("type")
-    @Column( name = "type",nullable = false)
-    private String activityType;
+    @JsonProperty("time")
+    @Column( name = "time",nullable = false)
+    private Date time;
 
-    @JsonProperty("start_time")
-    @Column( name = "start_time",nullable = false)
-    private Date startTime;
+    @JsonProperty("distance")
+    @Column( name = "distance",nullable = false)
+    private int distance;
+
+    @JsonProperty("power")
+    @Column( name = "power",nullable = false)
+    private int power;
+
+    @JsonProperty("cadence")
+    @Column( name = "cadence",nullable = false)
+    private int cadence;
 
     @Column( name = "created_date",nullable = false)
     @CreationTimestamp
@@ -51,5 +59,7 @@ public class Activity {
     @JsonIgnore
     @Column(name = "is_deleted",nullable = true)
     private Boolean is_deleted = false;
+
+
 
 }

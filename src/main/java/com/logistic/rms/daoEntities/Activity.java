@@ -10,54 +10,51 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
-@Table(name = "RATE")
+@Table(name = "ACTIVITY")
 @EqualsAndHashCode
 @ToString(includeFieldNames = true)
 @Where(clause = "is_deleted = false")
-@SQLDelete(sql = "update RATE set is_deleted=true where rateid = ?")
-public class Rate {
+@SQLDelete(sql = "update ACTIVITY set is_deleted=true where id = ?")
+public class Activity extends com.logistic.rms.model.Activity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column( name = "rateid",nullable = false)
-    @JsonProperty("rateid")
+    @Column( name = "id",nullable = false)
+    @JsonProperty("id")
     private long id;
 
-    @JsonProperty("ratedescription")
-    @Column( name = "ratedescription",nullable = true)
-    private String description;
+    @JsonProperty("activty_def")
+    @Column( name = "description",nullable = true)
+    private String activityDef;
 
-    @JsonProperty("Rate_Expiration_Date")
-    @Column( name = "rateexpirationdate",nullable = false)
-    private Date expirationDate;
+    @JsonProperty("name")
+    @Column( name = "name",nullable = false)
+    private String name;
 
-    @Column( name = "rateeffectivedate",nullable = false)
-    @JsonProperty("Rate_Effective_Date")
-    private Date effectiveDate;
+    @JsonProperty("type")
+    @Column( name = "type",nullable = false)
+    private String activityType;
+
+    @JsonProperty("start_time")
+    @Column( name = "start_time",nullable = false)
+    private Date startTime;
 
     @Column( name = "created_date",nullable = false)
     @CreationTimestamp
     @JsonIgnore
     private Date created;
 
-    @JsonProperty("Amount")
-    @Column(name = "amount", nullable = false)
-    private float amount;
-
-    @JsonProperty("Surcharge Rate")
-    @Transient
-    private int surchargeRate;
-
-    @JsonProperty("Surcharge Description")
-    @Transient
-    private String surchargeDescription;
-
     @JsonIgnore
     @Column(name = "is_deleted",nullable = true)
     private Boolean is_deleted = false;
+
+    @OneToMany(mappedBy = "activity",cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private List<Record> recordList = new ArrayList<>();
 
 }
